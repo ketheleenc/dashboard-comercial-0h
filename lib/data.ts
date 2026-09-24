@@ -12,6 +12,7 @@ import type {
   ServiceSales,
   ViewId,
 } from "./types"
+import { STAGE_LABELS } from "./stage-colors"
 
 export const SALESPEOPLE: Salesperson[] = [
   {
@@ -112,20 +113,18 @@ export function getProjectedAchieved(view: ViewId, period: string): number {
 
 const PIPELINE_BASE: Record<SalespersonId, { stage: PipelineStage; label: string; count: number; value: number }[]> = {
   ketheleen: [
-    { stage: "novos", label: "Novos leads", count: 7, value: 46000 },
-    { stage: "qualificados", label: "Qualificados", count: 5, value: 58000 },
-    { stage: "negociacao", label: "Em negociação", count: 4, value: 64000 },
-    { stage: "quente", label: "Negócio quente", count: 3, value: 51000 },
-    { stage: "aprovados", label: "Aprovados", count: 2, value: 40000 },
-    { stage: "perdidos", label: "Perdidos", count: 3, value: 32000 },
+    { stage: "prospect", label: STAGE_LABELS.prospect, count: 12, value: 104000 },
+    { stage: "negociacao", label: STAGE_LABELS.negociacao, count: 4, value: 64000 },
+    { stage: "quente", label: STAGE_LABELS.quente, count: 3, value: 51000 },
+    { stage: "aprovados", label: STAGE_LABELS.aprovados, count: 2, value: 40000 },
+    { stage: "reprovado", label: STAGE_LABELS.reprovado, count: 3, value: 32000 },
   ],
   priscila: [
-    { stage: "novos", label: "Novos leads", count: 5, value: 34000 },
-    { stage: "qualificados", label: "Qualificados", count: 4, value: 42000 },
-    { stage: "negociacao", label: "Em negociação", count: 4, value: 56000 },
-    { stage: "quente", label: "Negócio quente", count: 2, value: 34000 },
-    { stage: "aprovados", label: "Aprovados", count: 2, value: 38000 },
-    { stage: "perdidos", label: "Perdidos", count: 2, value: 21000 },
+    { stage: "prospect", label: STAGE_LABELS.prospect, count: 9, value: 76000 },
+    { stage: "negociacao", label: STAGE_LABELS.negociacao, count: 4, value: 56000 },
+    { stage: "quente", label: STAGE_LABELS.quente, count: 2, value: 34000 },
+    { stage: "aprovados", label: STAGE_LABELS.aprovados, count: 2, value: 38000 },
+    { stage: "reprovado", label: STAGE_LABELS.reprovado, count: 2, value: 21000 },
   ],
 }
 
@@ -162,7 +161,7 @@ export function getPipeline(view: ViewId, period: string): PipelineEntry[] {
 }
 
 export function getPipelineTotal(pipeline: PipelineEntry[]) {
-  const open = pipeline.filter((p) => p.stage !== "perdidos" && p.stage !== "aprovados")
+  const open = pipeline.filter((p) => p.stage !== "reprovado" && p.stage !== "aprovados")
   return {
     count: open.reduce((s, p) => s + p.count, 0),
     value: open.reduce((s, p) => s + p.value, 0),
@@ -222,23 +221,19 @@ export function getOriginSales(view: ViewId, period: string): OriginSales[] {
 const LOSS_BASE: Record<SalespersonId, { reason: string; count: number }[]> = {
   ketheleen: [
     { reason: "Sem retorno", count: 4 },
-    { reason: "Preço", count: 3 },
-    { reason: "Sem orçamento", count: 2 },
+    { reason: "Fechou com outra empresa", count: 2 },
     { reason: "Projeto adiado", count: 2 },
-    { reason: "Escolheu concorrente", count: 2 },
+    { reason: "Preço", count: 5 },
     { reason: "Projeto cancelado", count: 1 },
-    { reason: "Sem aprovação da diretoria", count: 1 },
-    { reason: "Outros", count: 1 },
+    { reason: "Outros", count: 2 },
   ],
   priscila: [
     { reason: "Sem retorno", count: 3 },
-    { reason: "Preço", count: 2 },
-    { reason: "Sem orçamento", count: 3 },
+    { reason: "Fechou com outra empresa", count: 1 },
     { reason: "Projeto adiado", count: 1 },
-    { reason: "Escolheu concorrente", count: 1 },
+    { reason: "Preço", count: 5 },
     { reason: "Projeto cancelado", count: 1 },
-    { reason: "Sem aprovação da diretoria", count: 1 },
-    { reason: "Outros", count: 1 },
+    { reason: "Outros", count: 2 },
   ],
 }
 
@@ -276,18 +271,24 @@ export function getFollowUpSummary(view: ViewId): FollowUpSummary {
 
 export function getCommercialSummary(view: ViewId, period: string): CommercialSummary {
   const pipeline = getPipeline(view, period)
-  const approved = pipeline.find((p) => p.stage === "aprovados")
+  const prospect = pipeline.find((p) => p.stage === "prospect")
   const negotiation = pipeline.find((p) => p.stage === "negociacao")
   const hot = pipeline.find((p) => p.stage === "quente")
+  const approved = pipeline.find((p) => p.stage === "aprovados")
+  const reproved = pipeline.find((p) => p.stage === "reprovado")
   const total = getPipelineTotal(pipeline)
 
   return {
-    approvedCount: approved?.count ?? 0,
-    approvedValue: approved?.value ?? 0,
+    prospectCount: prospect?.count ?? 0,
+    prospectValue: prospect?.value ?? 0,
     negotiationCount: negotiation?.count ?? 0,
     negotiationValue: negotiation?.value ?? 0,
     hotDealsCount: hot?.count ?? 0,
     hotDealsValue: hot?.value ?? 0,
+    approvedCount: approved?.count ?? 0,
+    approvedValue: approved?.value ?? 0,
+    reprovedCount: reproved?.count ?? 0,
+    reprovedValue: reproved?.value ?? 0,
     pipelineTotalCount: total.count,
     pipelineTotalValue: total.value,
   }

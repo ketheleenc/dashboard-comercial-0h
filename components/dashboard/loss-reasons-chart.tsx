@@ -7,7 +7,7 @@ import { useDashboardFilters } from "@/components/dashboard-filters"
 import { getLossReasons } from "@/lib/data"
 
 const chartConfig: ChartConfig = {
-  count: { label: "Negócios perdidos", color: "var(--chart-5)" },
+  count: { label: "Negócios reprovados", color: "var(--chart-5)" },
 }
 
 export function LossReasonsChart() {

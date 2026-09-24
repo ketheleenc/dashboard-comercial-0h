@@ -16,7 +16,7 @@ export interface MonthlyResult {
   achieved: number
 }
 
-export type PipelineStage = "novos" | "qualificados" | "negociacao" | "quente" | "aprovados" | "perdidos"
+export type PipelineStage = "prospect" | "negociacao" | "quente" | "aprovados" | "reprovado"
 
 export interface PipelineEntry {
   stage: PipelineStage
@@ -48,12 +48,16 @@ export interface FollowUpSummary {
 }
 
 export interface CommercialSummary {
-  approvedCount: number
-  approvedValue: number
+  prospectCount: number
+  prospectValue: number
   negotiationCount: number
   negotiationValue: number
   hotDealsCount: number
   hotDealsValue: number
+  approvedCount: number
+  approvedValue: number
+  reprovedCount: number
+  reprovedValue: number
   pipelineTotalCount: number
   pipelineTotalValue: number
 }

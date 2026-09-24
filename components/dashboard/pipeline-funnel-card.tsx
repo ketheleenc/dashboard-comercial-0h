@@ -5,15 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart"
 import { useDashboardFilters } from "@/components/dashboard-filters"
 import { formatCurrency, getPipeline } from "@/lib/data"
-
-const STAGE_COLORS: Record<string, string> = {
-  novos: "var(--chart-1)",
-  qualificados: "var(--chart-2)",
-  negociacao: "var(--chart-3)",
-  quente: "var(--chart-4)",
-  aprovados: "var(--chart-5)",
-  perdidos: "var(--muted-foreground)",
-}
+import { STAGE_COLORS } from "@/lib/stage-colors"
 
 const chartConfig: ChartConfig = {
   value: { label: "Valor em negociação" },
@@ -25,7 +17,7 @@ export function PipelineFunnelCard() {
 
   const data = pipeline.map((p) => ({
     ...p,
-    fill: STAGE_COLORS[p.stage] ?? "var(--chart-1)",
+    fill: STAGE_COLORS[p.stage],
   }))
 
   return (
