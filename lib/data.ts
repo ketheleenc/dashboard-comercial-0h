@@ -9,7 +9,7 @@ import type {
   PipelineStage,
   Salesperson,
   SalespersonId,
-  ServiceSales,
+  ProgramSales,
   ViewId,
 } from "./types"
 import { STAGE_LABELS } from "./stage-colors"
@@ -170,27 +170,23 @@ export function getPipelineTotal(pipeline: PipelineEntry[]) {
 
 // --- Serviços e origens -----------------------------------------------------
 
-const SERVICE_SHARE: { service: string; ketheleen: number; priscila: number }[] = [
-  { service: "Terceirização da Qualidade", ketheleen: 0.3, priscila: 0.24 },
-  { service: "Implantação ISO 9001", ketheleen: 0.2, priscila: 0.24 },
-  { service: "Manutenção/Evolução do SGQ", ketheleen: 0.13, priscila: 0.15 },
-  { service: "Auditoria", ketheleen: 0.12, priscila: 0.08 },
-  { service: "Treinamentos", ketheleen: 0.06, priscila: 0.11 },
-  { service: "Certificação", ketheleen: 0.08, priscila: 0.08 },
-  { service: "IATF", ketheleen: 0.06, priscila: 0.04 },
-  { service: "ISO 14001", ketheleen: 0.03, priscila: 0.04 },
-  { service: "Outros", ketheleen: 0.02, priscila: 0.02 },
+const PROGRAM_SHARE: { program: string; ketheleen: number; priscila: number }[] = [
+  { program: "Gestão para Certificação", ketheleen: 0.32, priscila: 0.28 },
+  { program: "Evolução Contínua", ketheleen: 0.22, priscila: 0.2 },
+  { program: "Auditoria Certa", ketheleen: 0.16, priscila: 0.14 },
+  { program: "Aceleração de Equipes", ketheleen: 0.15, priscila: 0.2 },
+  { program: "Estruturação de Sistemas", ketheleen: 0.15, priscila: 0.18 },
 ]
 
-export function getServiceSales(view: ViewId, period: string): ServiceSales[] {
+export function getProgramSales(view: ViewId, period: string): ProgramSales[] {
   if (view === "team") {
-    const k = getServiceSales("ketheleen", period)
-    const p = getServiceSales("priscila", period)
-    return k.map((entry, i) => ({ service: entry.service, value: entry.value + p[i].value }))
+    const k = getProgramSales("ketheleen", period)
+    const p = getProgramSales("priscila", period)
+    return k.map((entry, i) => ({ program: entry.program, value: entry.value + p[i].value }))
   }
   const achieved = getAchieved(view, period)
-  return SERVICE_SHARE.map((s) => ({
-    service: s.service,
+  return PROGRAM_SHARE.map((s) => ({
+    program: s.program,
     value: Math.round((achieved * s[view]) / 500) * 500,
   }))
 }

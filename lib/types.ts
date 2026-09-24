@@ -25,8 +25,8 @@ export interface PipelineEntry {
   value: number
 }
 
-export interface ServiceSales {
-  service: string
+export interface ProgramSales {
+  program: string
   value: number
 }
 
